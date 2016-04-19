@@ -28,6 +28,7 @@ use Doctrine\Common\Persistence\Mapping\Driver\DefaultFileLocator;
 use DoctrineModule\Options\Driver as DriverOptions;
 use DoctrineModule\Service\AbstractFactory;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use Interop\Container\ContainerInterface;
 
 /**
  * MappingDriver ServiceManager factory
@@ -38,16 +39,26 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  */
 class DriverFactory extends AbstractFactory
 {
+
     /**
      * {@inheritDoc}
      * @return MappingDriver
      */
     public function createService(ServiceLocatorInterface $sl)
     {
+        return $this->__invoke($sl, null);
+    }
+    
+    /**
+     * {@inheritDoc}
+     * @return MappingDriver
+     */
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
+    {
         /* @var $options DriverOptions */
-        $options = $this->getOptions($sl, 'driver');
+        $options = $this->getOptions($container, 'driver');
 
-        return $this->createDriver($sl, $options);
+        return $this->createDriver($container, $options);
     }
 
     /**
